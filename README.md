@@ -11,7 +11,6 @@ The image below shows the expected output of the project.
 ---
 
 **Files in this project**
----
 
 * the Ipython notebook `P1.ipynb` which contains the code
 * the `test_images` folder contains some test images
@@ -25,7 +24,6 @@ The image below shows the expected output of the project.
 ---
 
 **Steps how I implemented this project**
----
 
 ## 1. Extend the Helper Functions
 
@@ -76,6 +74,30 @@ It consists of the following nine steps:
     * one left and one right lane line is added to the lane lines list
 8. draw lane lines into a clear image
 9. add the original image with the drawn lane lines with the `weighted_img` function
+
+ToDo: include some images for each step
+
+## 4. Potential shortcomings with current pipeline
+
+* The current pipeline is not very robust when there is some shadow or brighter situation on the road.
+* Also curves cannot be detected, because the hough transformation in step 5 does only search for straight lines.
+* If the car does a lane change, the lane lines do not point near to the bottom corners any more. The lane lines detection would fail in step 6 where the filtering is happening.
+
+By now the `challenge.mp4` video does not work well with the current pipeline.
+
+ToDo: include some images
+
+## 5. Possible improvements to your pipeline
+
+A possible improvement would be to use some morphological filter operations after step 1 (gray-scale).
+To increase the area of the lane lines a `Dilation` may would help to improve the line detection with canny edges.
+[This](https://www.cs.auckland.ac.nz/courses/compsci773s1c/lectures/ImageProcessing-html/topic4.htm) and [this](http://scikit-image.org/docs/dev/auto_examples/xx_applications/plot_morphology.html) looks to be some good references.
+
+![Dilation example](https://www.cs.auckland.ac.nz/courses/compsci773s1c/lectures/ImageProcessing-html/mor-pri-dilation.gif)
+
+Another improvement could be to track the lane lines from one frame of the video to the next frames.
+
+To allow to detect curved lanes it may be an improvement to use some more horizontal ROI's and let the hough transformation find lines in each horizontal stripe.
 
 ---
 
