@@ -73,7 +73,7 @@ It consists of the following nine steps:
     * an average over the `x`-coordinates is calculated
     * one left and one right lane line is added to the lane lines list
 8. draw lane lines into a clear image
-9. add the original image with the drawn lane lines with the `weighted_img` function
+9. combine the original image with the drawn lane lines by calling the `weighted_img` function
 
 ToDo: include some images for each step
 
