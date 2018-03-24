@@ -10,6 +10,19 @@ The image below shows the expected output of the project.
 
 ---
 
+**Files in this project**
+
+* the Ipython notebook `P1.ipynb` which contains the code
+* the `test_images` folder contains some test images
+* the `test_videos` folder contains some test videos
+* the code saves the processed test images to the `test_images_output` folder
+* the code saves the processed test videos to the `test_videos_output` folder
+* the `LICENSE` file
+* this `README.md` containing a description of the implementation
+* the `examples` folder contains some examples from Udacity
+
+---
+
 **Steps how I implemented this project**
 
 ## 1. Extend the Helper Functions
