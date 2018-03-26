@@ -1,7 +1,7 @@
 # **Project: Finding Lane Lines on the Road**
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-The goal of this project ia to make a pipeline that finds lane lines on the road.
+The goal of this project is to create a pipeline that finds lane lines on the road.
 Therefore some test images in the subfolder `test_images` and two test videos (`test_videos/solidYellowLeft.mp4` and `test_videos/solidWhiteRight.mp4`) are provided by Udacity.
 There is also one optional more difficult test video `test_videos/challenge.mp4`.
 The image below shows the expected output of the project.
@@ -25,10 +25,15 @@ The image below shows the expected output of the project.
 
 **Steps how I implemented this project**
 
-## 1. Extend the Helper Functions
+## 1. Extend the Helper Functions for images
 
 `read_img` and `write_img` were added in order to outsource image IO handling.
 `write_img` also converts the image before saving it to disk, if it is a color image, from RGB (matplotlib) to BGR (OpenCV).
+
+`hsv` and `hls` convert the color space of the image to HSV or HLS respectively.
+They are currently not used, but I tested some line recognition in those color spaces, but this is not finished jet.
+
+`equalize_histogram` normalizes the image, but the output does not enhance the line recognition.
 
 `ensure_color` takes a gray-scale or color image as input and always returns a color image with three channels.
 
@@ -37,9 +42,9 @@ The image below shows the expected output of the project.
 
 All other helper function were left as they were provided by Udacity.
 
-## 2. Handling straights
+## 2. Create some Helper Functions for straights
 
-Additionally there were three more functions added to handle straights.
+Additionally there were some more functions added to handle straights and line segments.
 
 `get_straight_params_from_2points` calculates the slop `m` of a straight through two given points and the y-axis intercept `t`.
 
@@ -47,18 +52,29 @@ Additionally there were three more functions added to handle straights.
 
 `get_x_for_y_equals` calculates the `x`-coordinate of the interception point of the lines defined by `straight_params` [`(m,t)` which define the line `y=m*x+t`] and some horizontal line defined by `y=<some value>`.
 
+`approximate_line` rejects outliers and averages the start and end of the given lines to approximate a single line.
+
+`extrapolate_line_for_y_range` gets a line as input and extrapolates it between `y_min` and `y_max` or cuts it into that range if it is to long.
+
 ## 3. Defining the pipeline
 
-The `detectLaneLines` pipeline is defined in a separate function named equally.
+The `detect_lane_lines` pipeline is defined in a corresponding function named equally.
 It consists of the following nine steps:
 
-1. convert the image to gray-scale
-2. smooth high frequent noise with a gaussian blur
-3. apply a canny edge detection
-4. select a region of interest
-    ToDo: include image
-5. get lines from hough transformation
-6. filter lines
+1. `extract_lane_lines` into a binary image
+    * **ToDo:** detail steps
+    * **ToDo:** include image
+2. `detect_edges` to prepare the image for the hough transformation
+    * smooth the binary image with a gaussian blur
+    * apply a canny edge detection
+    * **ToDo:** include image
+3. select a region of interest
+    * **ToDo:** detail steps
+    * **ToDo:** include image
+4. `detect_hough_lines` using the hough transformation
+    * **ToDo:** detail steps
+    * **ToDo:** include image
+5. `filter_lines` for left and right lane boundary
     * two lists should be created: `left_lines` and `right_lines`
     * assuming the car on which the camera images are taken from is in a lane, there should be one lane pointing near to the bottom left corner and one lane pointing near to the bottom right corner of the image
     * therefore at the bottom of the image there are two areas defined (left and right)
@@ -75,7 +91,7 @@ It consists of the following nine steps:
 8. draw lane lines into a clear image
 9. combine the original image with the drawn lane lines by calling the `weighted_img` function
 
-ToDo: include some images for each step
+**ToDo:** include some images for each step
 
 ## 4. Potential shortcomings with current pipeline
 
@@ -85,7 +101,7 @@ ToDo: include some images for each step
 
 By now the `challenge.mp4` video does not work well with the current pipeline.
 
-ToDo: include some images
+**ToDo:** include some images
 
 ## 5. Possible improvements to your pipeline
 
@@ -98,6 +114,12 @@ To increase the area of the lane lines a `Dilation` may would help to improve th
 Another improvement could be to track the lane lines from one frame of the video to the next frames.
 
 To allow to detect curved lanes it may be an improvement to use some more horizontal ROI's and let the hough transformation find lines in each horizontal stripe.
+
+**ToDo:** may use HSL instead of HSV color space
+
+**ToDo:** contrast correction (histogram equalization)
+
+**ToDo:** intrinsic camera parameters
 
 ---
 
