@@ -62,36 +62,47 @@ The `detect_lane_lines` pipeline is defined in a corresponding function named eq
 It consists of the following nine steps:
 
 1. `extract_lane_lines` into a binary image
-    * **ToDo:** detail steps
-    * **ToDo:** include image
+    * first a `morphological gradient` is used to emphasize the lane lines
+    * second a `morphological tophat` is used to emphasize **thin** lane lines
+    * both images are combined using the maximum of each channel for each pixel
+    * next the three color channels are combined into one using the maximum channel for each pixel
+    * `morphological dilate` enhances the detected areas (especially useful for thin lane lines in the distance)
+    * last a threshold is used to select potential lane lines
+    * ![extractedLaneLines](writeup_img/extractedLaneLines.jpg)
 2. `detect_edges` to prepare the image for the hough transformation
     * smooth the binary image with a gaussian blur
     * apply a canny edge detection
-    * **ToDo:** include image
+    * ![detectedEdges](writeup_img/detectedEdges.jpg)
 3. select a region of interest
-    * **ToDo:** detail steps
-    * **ToDo:** include image
+    * ![roi](writeup_img/roi.jpg)
 4. `detect_hough_lines` using the hough transformation
-    * **ToDo:** detail steps
-    * **ToDo:** include image
+    * ![houghLines](writeup_img/houghLines.jpg)
 5. `filter_lines` for left and right lane boundary
     * two lists should be created: `left_lines` and `right_lines`
-    * assuming the car on which the camera images are taken from is in a lane, there should be one lane pointing near to the bottom left corner and one lane pointing near to the bottom right corner of the image
-    * therefore at the bottom of the image there are two areas defined (left and right)
-    * lines which point into the left area are considered to be part of a left lane line and are added to the `left_lines` list
-    * lines which point into the right area are considered to be part of a right lane line and are added to the `right_lines` list
-7. building an average of left and right lane lines
-    * assuming we are on a straight road
-    * all lines on one lane line (left or right) should point to approximately to the same start and end point (bottom and top fo the image)
-    * all starting points have a `y`-coordinate of `bottom` = bottom of ROI
-    * an average over the `x`-coordinates is calculated
-    * all end points have a `y`-coordinate of `top` = top of ROI
-    * an average over the `x`-coordinates is calculated
+    * assuming the camera images are taken from a car within the lane boundaries, there should be one lane boundary pointing near to the bottom left corner and one lane boundary pointing near to the bottom right corner of the image
+    * therefore at the bottom of the image there are two areas defined (left and right of the ROI)
+    * lines which point into the left area are considered to be part of a left lane boundary and are added to the `left_lines` list
+    * lines which point into the right area are considered to be part of a right lane boundary and are added to the `right_lines` list
+    * all lines also have to point to the top of the ROI in order to be a possible lane boundary
+    * ![leftRightLines](writeup_img/leftRightLines.jpg)
+6. `approximate_line` for left and right lane boundary
+    * all operations assume the road is straight (and also the lane boundaries are straights)
+    * first `reject_outlier_lines` is used
+        * reject lines where their angle is not near to the median of all angles
+        * reject lines based on `threshold_distance` to median line (as the lines would be parallel to each other)
+        * left and right lines are calculated separately
+        * ![rejectOutlierLines](writeup_img/rejectOutlierLines.jpg)
+    * second the minimum and maximum of the y values is used for the maximal extend of the approximated line (top and bottom lines)
+    * each line is intersected with the top and bottom lines
+    * the mean of all intersections on the bottom line is used as start point
+    * the mean of all intersections on the top line is uses as the end point
+    * ![approximatedLines](writeup_img/approximatedLines.jpg)
     * one left and one right lane line is added to the lane lines list
+7. `extrapolate_line_for_y_range` so lane boundaries are drawn in the whole region of interest
+    * the approximated two lines are extrapolated within the ROI
 8. draw lane lines into a clear image
 9. combine the original image with the drawn lane lines by calling the `weighted_img` function
-
-**ToDo:** include some images for each step
+    * ![finalLaneLines](writeup_img/finalLaneLines.jpg)
 
 ## 4. Potential shortcomings with current pipeline
 
